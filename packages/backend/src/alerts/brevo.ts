@@ -18,13 +18,29 @@ const BREVO_SEND_URL = "https://api.brevo.com/v3/smtp/email";
 /** Long enough for a slow API, short enough that one bad send can't hold an org's lease. */
 const SEND_TIMEOUT_MS = 10_000;
 
+/**
+ * The part of `fetch` this file uses, declared here rather than taken from the global `fetch`
+ * type. @types/node takes `Response`'s members from `undici-types`, and where that package can't
+ * be resolved (Vercel's compile of the function, under pnpm's strict layout) `Response` has none:
+ * `res.ok` then fails to typecheck and the deployment fails to build.
+ */
+interface FetchResponse {
+  ok: boolean;
+  status: number;
+  json(): Promise<unknown>;
+}
+type Fetch = (
+  url: string,
+  init: { method: string; headers: Record<string, string>; body: string; signal: AbortSignal },
+) => Promise<FetchResponse>;
+
 export interface BrevoMailerOptions {
   apiKey: string;
   from: string;
   fromName: string;
   /** For tests. */
   url?: string;
-  fetch?: typeof fetch;
+  fetch?: Fetch;
 }
 
 export class BrevoMailer implements Mailer {
@@ -32,7 +48,7 @@ export class BrevoMailer implements Mailer {
 
   async send(to: readonly string[], email: AlertEmail): Promise<void> {
     if (to.length === 0) return;
-    const doFetch = this.options.fetch ?? fetch;
+    const doFetch: Fetch = this.options.fetch ?? (fetch as unknown as Fetch);
     const res = await doFetch(this.options.url ?? BREVO_SEND_URL, {
       method: "POST",
       headers: {
