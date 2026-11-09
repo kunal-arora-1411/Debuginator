@@ -3,7 +3,8 @@ import type { ControlDb, PublicOrg } from "../db/control.js";
 import {
   clearAlertPending,
   clearAllAlertPending,
-  hasEarlierTwin,
+  findEarlierTwins,
+  hasAlertPendingSince,
   listAlertPending,
   type IssueDocument,
 } from "../db/collections/issues.js";
@@ -30,6 +31,11 @@ const MAX_PENDING_PER_RUN = 200;
 /** Issues described in one email; any more are counted ("…and 12 more"). */
 const MAX_LISTED = 10;
 const STACK_LINES = 6;
+/**
+ * Runs one call makes back to back. A run that finds the lease held leaves its issues to the
+ * holder, which looks again after releasing it (see runForOrg); this bounds how often it does.
+ */
+const MAX_ROUNDS = 5;
 
 export interface AlertRunResult {
   /** Emails sent (0 or 1). */
@@ -44,6 +50,16 @@ export interface AlertRunResult {
 }
 
 const NOTHING: AlertRunResult = { emails: 0, alerted: 0, skipped: 0, held: false };
+
+/** One leased run, plus what runForOrg needs to decide whether to run again. */
+interface LeasedRun extends AlertRunResult {
+  /** When the pending issues were listed: issues marked after this were not looked at. */
+  listedAt?: string;
+  /** More pending issues than one run looks at. */
+  more?: boolean;
+  /** Waiting for the hourly cap: another run now would only hold them again. */
+  capped?: boolean;
+}
 
 export interface AlertNotifierOptions {
   dashboardUrl?: string;
@@ -99,9 +115,26 @@ export class AlertNotifier {
         await clearAllAlertPending(this.controlDb.getClient().db(org.dbName));
         return NOTHING;
       }
-      const leased = await this.controlDb.claimAlertLease(orgId, LEASE_MS, this.now());
-      if (!leased) return { ...NOTHING, held: true };
-      return await this.sendLeased(leased);
+      // A run that finds the lease held returns at once and leaves its issues to the holder. So
+      // the holder, once it has released the lease, looks for issues marked since it listed them
+      // and runs again for them: an issue marked before the release is seen by that look, and one
+      // marked after it is run by its own ingest, which can then take the lease. Without this, an
+      // issue created during a send waited for the next trigger (on Vercel, the daily cron).
+      const db = this.controlDb.getClient().db(org.dbName);
+      const total: AlertRunResult = { ...NOTHING };
+      for (let round = 0; round < MAX_ROUNDS; round++) {
+        const leased = await this.controlDb.claimAlertLease(orgId, LEASE_MS, this.now());
+        if (!leased) return round === 0 ? { ...NOTHING, held: true } : total;
+        const run = await this.sendLeased(leased);
+        total.emails += run.emails;
+        total.alerted += run.alerted;
+        total.skipped += run.skipped;
+        total.held = run.held;
+        if (run.error) return { ...total, error: run.error };
+        if (run.capped || run.listedAt === undefined) break;
+        if (!run.more && !(await hasAlertPendingSince(db, run.listedAt))) break;
+      }
+      return total;
     } catch (err) {
       return { ...NOTHING, error: err instanceof Error ? err.message : String(err) };
     }
@@ -120,7 +153,7 @@ export class AlertNotifier {
     return total;
   }
 
-  private async sendLeased(org: PublicOrg): Promise<AlertRunResult> {
+  private async sendLeased(org: PublicOrg): Promise<LeasedRun> {
     const alerts = org.alerts!;
     const now = this.now();
     const sentAt = (org.alertState?.sentAt ?? []).filter(
@@ -135,27 +168,34 @@ export class AlertNotifier {
 
     try {
       const db = this.controlDb.getClient().db(org.dbName);
+      // The real clock, not `now`: it is compared with marks ingest wrote with the real clock.
+      const listedAt = new Date().toISOString();
       const pending = await listAlertPending(db, MAX_PENDING_PER_RUN);
-      const skip: string[] = [];
-      const send: IssueDocument[] = [];
-      for (const issue of pending) {
-        const wanted =
+      const more = pending.length === MAX_PENDING_PER_RUN;
+      // Filters apply to where the alert is about (the places that made it pending), falling back
+      // to everywhere the issue has been for marks written before those places were recorded.
+      const placesOf = (list: string[] | undefined, all: string[] | undefined) =>
+        list && list.length > 0 ? list : (all ?? []);
+      const wanted = pending.filter(
+        (issue) =>
           (issue.alertPendingAt ?? issue.firstSeen) >= alerts.since &&
-          matchesAny(issue.services ?? [], alerts.services) &&
-          matchesAny(issue.environments ?? [], alerts.environments);
-        if (!wanted || (await hasEarlierTwin(db, issue))) skip.push(issue.fingerprint);
-        else send.push(issue);
-      }
+          matchesAny(placesOf(issue.alertServices, issue.services), alerts.services) &&
+          matchesAny(placesOf(issue.alertEnvironments, issue.environments), alerts.environments),
+      );
+      const twins = await findEarlierTwins(db, wanted);
+      const send: IssueDocument[] = wanted.filter((i) => !twins.has(i.fingerprint));
+      const sending = new Set(send.map((i) => i.fingerprint));
+      const skip = pending.filter((i) => !sending.has(i.fingerprint));
       await clearAlertPending(db, skip);
 
       if (send.length === 0) {
         await finish(false);
-        return { ...NOTHING, skipped: skip.length };
+        return { ...NOTHING, skipped: skip.length, listedAt, more };
       }
       if (sentAt.length >= this.options.maxEmailsPerHour) {
         // They stay pending and go out together once the hour allows another email.
         await finish(false);
-        return { ...NOTHING, skipped: skip.length, held: true };
+        return { ...NOTHING, skipped: skip.length, held: true, capped: true, listedAt };
       }
 
       const listed = send.slice(0, MAX_LISTED);
@@ -186,12 +226,16 @@ export class AlertNotifier {
           dashboardUrl: this.options.dashboardUrl,
         }),
       );
-      await clearAlertPending(
-        db,
-        send.map((i) => i.fingerprint),
-      );
+      await clearAlertPending(db, send);
       await finish(true);
-      return { emails: 1, alerted: send.length, skipped: skip.length, held: false };
+      return {
+        emails: 1,
+        alerted: send.length,
+        skipped: skip.length,
+        held: false,
+        listedAt,
+        more,
+      };
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       await finish(false, message).catch(() => {});

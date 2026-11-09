@@ -295,6 +295,20 @@ describe("three services, one database timeout: the cause travels up the chain",
     expect(traced.headers.get(HEADER_CAUSE)).toBe(deltas[0]!.fingerprint);
   });
 
+  it("a handler that responds before capturing records only its real error", async () => {
+    const svc = service("svc");
+    const url = await serve(svc.bb, (res) => {
+      res.statusCode = 500;
+      res.end("failed");
+      svc.bb.captureException(new Error("real failure"));
+    });
+    const traced = await fetch(url, { headers: { traceparent: TRACEPARENT } });
+    expect(traced.status).toBe(500);
+    const { deltas, events } = await folds();
+    expect(deltas).toHaveLength(1);
+    expect(events.every((e) => !e.error?.type.startsWith("HandledHttpError"))).toBe(true);
+  });
+
   it("an error captured before the downstream failure is not credited to it", () => {
     const ring = new RingBuffer<RawCapture>(1024 * 1024);
     const engine = createCaptureEngine({

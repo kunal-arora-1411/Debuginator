@@ -53,17 +53,30 @@ issues:
   services?         string[]                       <- every service (SDK `project`) it was seen in
   environments?     string[]                       <- every environment it was seen in
   alertPendingAt?   string (ISO datetime)          <- waiting for its email alert; see below
+  alertServices?    string[]                       <- where the pending alert is about; see below
+  alertEnvironments? string[]                      <- likewise
+  placesTracked?    true                           <- created with complete services/environments
 ```
 
 Indexes: `fingerprint` (unique), `(lastSeen -1, fingerprint -1)` for the default newest-first
 list, `(services, lastSeen -1, fingerprint -1)` for the list filtered to one service, and a sparse
-`alertPendingAt` index holding only issues whose alert hasn't been dealt with.
+`alertPendingAt` index holding only issues whose alert hasn't been dealt with, and
+`(title.type, title.message)` for the alert sender's search for an older issue that is the same
+error under a new fingerprint.
 
 **Email alerts.** `alertPendingAt` is set when an issue is created, in the same write, so no new
 issue can be missed; and again the first time an existing issue appears in another environment or
-service. The alert sender (`src/alerts/notifier.ts`) sends the org's pending issues in one email and
-removes the field, or removes it without an email when the org's settings exclude the issue.
-`orgs.alertState.leaseUntil` lets only one backend process send an org's alerts at a time. Issues
+service. Only issues created with `placesTracked` alert on reaching a new place: an older issue's
+lists are incomplete, so its other environments would all look new. An empty list (an issue created
+by a fold without example events) is not news either. `alertServices`/`alertEnvironments` record
+where the alert is about (the creating fold's place, plus each new one), and the org's service and
+environment filters are checked against them, not against everywhere the issue has been. The alert
+sender (`src/alerts/notifier.ts`) sends the org's pending issues in one email and removes these
+fields, or removes them without an email when the org's settings exclude the issue; either way only
+where `alertPendingAt` is still the value it read, so a mark set during a send is kept for the next
+one. `orgs.alertState.leaseUntil` lets only one backend process send an org's alerts at a time; a
+run that finds it held leaves its issues to the holder, which looks for marks newer than its list
+after releasing the lease and runs again for them. Issues
 stored by an older backend get `title` and `services` from their example events the first time
 they are read, written back once.
 

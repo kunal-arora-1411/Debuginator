@@ -854,7 +854,9 @@
   }
 
   function renderAll() {
-    const filtered = allIssues.filter(matchesFilter);
+    // The open issue always stays listed: one opened from a cause link or an email's link may be
+    // outside the current search, filter or service, and its detail row hangs off its own row.
+    const filtered = allIssues.filter((i) => i.fingerprint === selectedFingerprint || matchesFilter(i));
     const sorted = filtered.slice().sort((a, b) => {
       const av = sortValue(a, sortKey), bv = sortValue(b, sortKey);
       const cmp = typeof av === "string" && typeof bv === "string" ? av.localeCompare(bv) : (av > bv) - (av < bv);

@@ -1,5 +1,7 @@
-import type { AnyBulkWriteOperation, Collection, Db } from "mongodb";
+import { MongoBulkWriteError, type AnyBulkWriteOperation, type Collection, type Db } from "mongodb";
 import { CAUSE_FINGERPRINT_PATTERN } from "@bugbusterhq/types";
+
+const DUPLICATE_KEY_ERROR_CODE = 11000;
 
 /**
  * Cause and effect between issues (docs/architecture/root-cause-graph.md §5): one document per
@@ -55,9 +57,14 @@ export async function recordCauseLinks(
     await issueLinksCollection(db).bulkWrite(writes, { ordered: false });
   } catch (err) {
     // Two first-ever writes of one pair can race on the unique index; the loser's pair exists
-    // now, so replaying the batch applies it as a plain update (same reasoning as upsertFoldDelta).
-    if ((err as { code?: number }).code !== 11000) throw err;
-    await issueLinksCollection(db).bulkWrite(writes, { ordered: false });
+    // now, so replaying that write applies it as a plain update (same reasoning as
+    // upsertFoldDelta). Only the writes that failed: the batch is unordered, so the others have
+    // already applied their $inc, and replaying them would count them twice.
+    if (!(err instanceof MongoBulkWriteError)) throw err;
+    const failed = Array.isArray(err.writeErrors) ? err.writeErrors : [err.writeErrors];
+    if (failed.length === 0 || failed.some((e) => e.code !== DUPLICATE_KEY_ERROR_CODE)) throw err;
+    const retry = failed.map((e) => writes[e.index]!);
+    await issueLinksCollection(db).bulkWrite(retry, { ordered: false });
   }
   return writes.length;
 }

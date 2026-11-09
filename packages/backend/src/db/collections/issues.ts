@@ -46,6 +46,21 @@ export interface IssueDocument {
    * service, so an error first seen in staging still alerts when it reaches production.
    */
   alertPendingAt?: string;
+  /**
+   * Where the pending alert is about: the service and environments of the fold that created the
+   * issue, plus those of each fold that later brought it somewhere new. The org's alert filters are
+   * checked against these, not against everywhere the issue has ever been, so an issue already
+   * alerted in production does not alert again (to a production-only filter) when it reaches
+   * staging. Removed together with `alertPendingAt`.
+   */
+  alertServices?: string[];
+  alertEnvironments?: string[];
+  /**
+   * Set when the issue is created by a backend that records every service and environment a fold
+   * brings. Only such issues alert on reaching a new one: an issue stored earlier has incomplete
+   * lists (or none), so "not in the list" would not mean "never seen there".
+   */
+  placesTracked?: boolean;
 }
 
 export interface IssueTitle {
@@ -156,6 +171,8 @@ export async function ensureIssuesIndexes(db: Db): Promise<void> {
   await issuesCollection(db).createIndex({ services: 1, lastSeen: -1, fingerprint: -1 });
   // Sparse: only issues whose alert has not been dealt with yet are in it.
   await issuesCollection(db).createIndex({ alertPendingAt: 1 }, { sparse: true });
+  // The alert sender's look for an older issue that is the same error (findEarlierTwins).
+  await issuesCollection(db).createIndex({ "title.type": 1, "title.message": 1 });
 }
 
 // Mongo field names historically disallowed literal dots; endpoint paths commonly contain
@@ -203,6 +220,9 @@ export async function upsertFoldDelta(
     exemplarRefs: [],
     adjustedCount: 1.0,
     alertPendingAt: now,
+    alertServices: delta.service ? [delta.service] : [],
+    alertEnvironments: [...(context.environments ?? [])],
+    placesTracked: true,
   };
   if (endpointEntries.length === 0) {
     setOnInsert.endpointCounts = {};
@@ -224,29 +244,38 @@ export async function upsertFoldDelta(
   };
 
   // The document as it was before this fold (null when this fold created it), to tell whether the
-  // fold brought the issue somewhere new. Only lists that already existed count: an issue from
-  // before environments were recorded gains its first ones without being "new" there.
+  // fold brought the issue somewhere new. Only issues created with place tracking count (see
+  // `placesTracked`), and an empty list is not news either: an issue created by a fold that carried
+  // no example events has no environment yet, and its first one is where it was created.
   const outcome = async (
-    before: Pick<IssueDocument, "services" | "environments"> | null,
+    before: Pick<IssueDocument, "services" | "environments" | "placesTracked"> | null,
   ): Promise<FoldOutcome> => {
     if (before === null) return { created: true, newPlace: false };
+    if (before.placesTracked !== true) return { created: false, newPlace: false };
     const seen = (list: string[] | undefined, value: string) =>
-      !Array.isArray(list) || list.includes(value);
-    const newPlace =
-      (delta.service !== undefined && !seen(before.services, delta.service)) ||
-      (context.environments ?? []).some((env) => !seen(before.environments, env));
-    if (newPlace) {
-      await issuesCollection(db).updateOne(
-        { fingerprint: delta.fingerprint },
-        { $set: { alertPendingAt: now } },
-      );
-    }
-    return { created: false, newPlace };
+      !Array.isArray(list) || list.length === 0 || list.includes(value);
+    const envs = context.environments ?? [];
+    const newService = delta.service !== undefined && !seen(before.services, delta.service);
+    const newEnvs = envs.filter((env) => !seen(before.environments, env));
+    if (!newService && newEnvs.length === 0) return { created: false, newPlace: false };
+    // Where the alert is about: a new service, in every environment this fold came from; or this
+    // fold's service, in the environments that are new.
+    await issuesCollection(db).updateOne(
+      { fingerprint: delta.fingerprint },
+      {
+        $set: { alertPendingAt: now },
+        $addToSet: {
+          alertServices: { $each: delta.service ? [delta.service] : [] },
+          alertEnvironments: { $each: newService ? [...envs] : newEnvs },
+        },
+      },
+    );
+    return { created: false, newPlace: true };
   };
   const options = {
     upsert: true,
     returnDocument: "before" as const,
-    projection: { _id: 0, services: 1, environments: 1 },
+    projection: { _id: 0, services: 1, environments: 1, placesTracked: 1 },
   };
 
   try {
@@ -462,62 +491,148 @@ export async function listAlertPending(db: Db, limit: number): Promise<IssueDocu
     .toArray();
 }
 
-/** Marks these issues' alerts as dealt with. */
-export async function clearAlertPending(db: Db, fingerprints: readonly string[]): Promise<void> {
-  if (fingerprints.length === 0) return;
-  await issuesCollection(db).updateMany(
-    { fingerprint: { $in: [...fingerprints] } },
-    { $unset: { alertPendingAt: "" } },
-  );
+const ALERT_FIELDS = { alertPendingAt: "", alertServices: "", alertEnvironments: "" } as const;
+
+/**
+ * Marks these issues' alerts as dealt with: only where the mark is still the one that was read. A
+ * mark set again while the email was being sent (the issue reached another environment meanwhile)
+ * is left alone, so that alert goes out on the next run instead of being lost.
+ */
+export async function clearAlertPending(
+  db: Db,
+  issues: readonly Pick<IssueDocument, "fingerprint" | "alertPendingAt">[],
+): Promise<void> {
+  const writes = issues
+    .filter((i) => i.alertPendingAt !== undefined)
+    .map((i) => ({
+      updateOne: {
+        filter: { fingerprint: i.fingerprint, alertPendingAt: i.alertPendingAt },
+        update: { $unset: ALERT_FIELDS },
+      },
+    }));
+  if (writes.length === 0) return;
+  await issuesCollection(db).bulkWrite(writes, { ordered: false });
 }
 
 /** Clears every pending alert mark, for an org whose alerts are off. */
 export async function clearAllAlertPending(db: Db): Promise<void> {
   await issuesCollection(db).updateMany(
     { alertPendingAt: { $exists: true } },
-    { $unset: { alertPendingAt: "" } },
+    { $unset: ALERT_FIELDS },
   );
 }
 
+/** Whether any issue was marked for an alert after `since` (an ISO time). */
+export async function hasAlertPendingSince(db: Db, since: string): Promise<boolean> {
+  const found = await issuesCollection(db).findOne(
+    { alertPendingAt: { $gt: since } },
+    { projection: { _id: 0, fingerprint: 1 } },
+  );
+  return found !== null;
+}
+
+/** The SDK's error for a 5xx nothing else reported; its type already names the method and route. */
+const HANDLED_HTTP_ERROR = "HandledHttpError:";
+/** Older issues compared per pending issue, at most. */
+const MAX_TWIN_CANDIDATES = 20;
+
 /**
- * Whether an older issue is the same error as this one: same service, same error type and message,
- * thrown from the same place (function, file and line of its first example). That is what an SDK
- * upgrade that changes fingerprints looks like (0.3 added the service to them): the error isn't
- * new, only its fingerprint is, so it should not be alerted as new. The same message from another
- * place in the code is a different bug, and does alert.
+ * Which of these issues have an older issue that is the same error: same service, same error type
+ * and message, thrown from the same place (function, file and line of its first example). That is
+ * what an SDK upgrade that changes fingerprints looks like (0.3 added the service to them): the
+ * error isn't new, only its fingerprint is, so it should not be alerted as new. The same message
+ * from another place in the code is a different bug, and does alert.
+ *
+ * The SDK's HandledHttpError is matched on its type alone: the type names the method and route,
+ * and its stack is the SDK's own (which changes between SDK versions), so where it was "thrown"
+ * says nothing about the app.
+ *
+ * Two queries for the whole batch, however many issues: this runs while the alert lease is held.
  */
-export async function hasEarlierTwin(db: Db, issue: IssueDocument): Promise<boolean> {
-  const firstRef = issue.exemplarRefs?.[0];
-  if (!issue.title || !issue.services?.length || !firstRef) return false;
+export async function findEarlierTwins(
+  db: Db,
+  issues: readonly IssueDocument[],
+): Promise<Set<string>> {
+  const twins = new Set<string>();
+  const checkable = issues.filter(
+    (i) => i.title && (i.services?.length ?? 0) > 0 && i.exemplarRefs?.[0],
+  );
+  if (checkable.length === 0) return twins;
+
+  const isHttp = (i: IssueDocument) => i.title!.type.startsWith(HANDLED_HTTP_ERROR);
+  const unique = <T>(values: T[]) => [...new Set(values)];
+  const http = checkable.filter(isHttp);
+  const plain = checkable.filter((i) => !isHttp(i));
+  const or: Filter<IssueDocument>[] = [];
+  if (plain.length > 0) {
+    or.push({
+      "title.type": { $in: unique(plain.map((i) => i.title!.type)) },
+      "title.message": { $in: unique(plain.map((i) => i.title!.message)) },
+    });
+  }
+  if (http.length > 0) or.push({ "title.type": { $in: unique(http.map((i) => i.title!.type)) } });
+
+  const latest = checkable.reduce((m, i) => (i.firstSeen > m ? i.firstSeen : m), "");
   const candidates = await issuesCollection(db)
     .find(
       {
-        fingerprint: { $ne: issue.fingerprint },
-        "title.type": issue.title.type,
-        "title.message": issue.title.message,
-        services: { $in: issue.services },
-        firstSeen: { $lt: issue.firstSeen },
+        $or: or,
+        services: { $in: unique(checkable.flatMap((i) => i.services!)) },
+        firstSeen: { $lt: latest },
       },
-      { projection: { _id: 0, exemplarRefs: 1 } },
+      {
+        projection: {
+          _id: 0,
+          fingerprint: 1,
+          title: 1,
+          services: 1,
+          firstSeen: 1,
+          exemplarRefs: { $slice: 1 },
+        },
+      },
     )
-    .limit(20)
+    .limit(checkable.length * MAX_TWIN_CANDIDATES)
     .toArray();
-  const twinRefs = candidates.flatMap((c) =>
-    c.exemplarRefs?.[0] ? [c.exemplarRefs[0].eventId] : [],
-  );
-  if (twinRefs.length === 0) return false;
+
+  // Each pending issue's older, same-titled issues in one of its services.
+  const twinsOf = new Map<string, IssueDocument[]>();
+  for (const issue of checkable) {
+    const matches = candidates
+      .filter(
+        (c) =>
+          c.fingerprint !== issue.fingerprint &&
+          c.firstSeen < issue.firstSeen &&
+          c.title?.type === issue.title!.type &&
+          (isHttp(issue) || c.title?.message === issue.title!.message) &&
+          (c.services ?? []).some((s) => issue.services!.includes(s)),
+      )
+      .slice(0, MAX_TWIN_CANDIDATES);
+    if (matches.length === 0) continue;
+    if (isHttp(issue)) twins.add(issue.fingerprint);
+    else twinsOf.set(issue.fingerprint, matches);
+  }
+  if (twinsOf.size === 0) return twins;
+
+  const firstRef = (i: Pick<IssueDocument, "exemplarRefs">) => i.exemplarRefs?.[0]?.eventId;
+  const ids = checkable
+    .filter((i) => twinsOf.has(i.fingerprint))
+    .flatMap((i) => [firstRef(i), ...twinsOf.get(i.fingerprint)!.map(firstRef)])
+    .filter((id): id is string => id !== undefined);
   const events = await db
     .collection<BugBusterEvent>("events")
-    .find(
-      { eventId: { $in: [firstRef.eventId, ...twinRefs] } },
-      { projection: { _id: 0, eventId: 1, source: 1 } },
-    )
+    .find({ eventId: { $in: unique(ids) } }, { projection: { _id: 0, eventId: 1, source: 1 } })
     .toArray();
-  const where = (e: BugBusterEvent | undefined) =>
-    e?.source ? `${e.source.function}@${e.source.file}:${e.source.line}` : undefined;
-  const mine = where(events.find((e) => e.eventId === firstRef.eventId));
-  if (mine === undefined) return false;
-  return events.some((e) => e.eventId !== firstRef.eventId && where(e) === mine);
+  const where = new Map<string, string>();
+  for (const e of events) {
+    if (e.source) where.set(e.eventId, `${e.source.function}@${e.source.file}:${e.source.line}`);
+  }
+  for (const [fingerprint, matches] of twinsOf) {
+    const issue = checkable.find((i) => i.fingerprint === fingerprint)!;
+    const mine = where.get(firstRef(issue)!);
+    if (mine === undefined) continue;
+    if (matches.some((c) => where.get(firstRef(c) ?? "") === mine)) twins.add(fingerprint);
+  }
+  return twins;
 }
 
 /** Every service any issue has been seen in, for the Issues view's filter. */

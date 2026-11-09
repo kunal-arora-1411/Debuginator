@@ -248,14 +248,22 @@ export function createExpressIntegration(
     };
     const startedAt = process.hrtime.bigint();
 
-    const reportUnreported5xx = (status: number): void => {
-      if (state.captured) return;
+    // The error a 5xx nothing else reported is recorded as. Built once per request, so the one an
+    // X-BB-Cause header names while the headers are written is the one recorded at `finish`.
+    let unreported: Error | undefined;
+    const unreportedError = (status: number): Error => {
       const route = typeof req.route?.path === "string" ? req.route.path : "<unmatched>";
       // Grouped by error type (fingerprint.ts) — the route/method in the name keeps otherwise-
       // identical HandledHttpErrors from colliding into one issue.
-      requestState.run(state, () =>
-        tracked.captureException(handledHttpError(status, req.method ?? "?", route)),
-      );
+      unreported ??= handledHttpError(status, req.method ?? "?", route);
+      return unreported;
+    };
+    // Only at `finish`: an error handler commonly sends the 500 first and captures the error after,
+    // so at writeHead time "nothing was captured" does not yet mean nothing will be.
+    const reportUnreported5xx = (status: number): void => {
+      if (state.captured) return;
+      const error = unreportedError(status);
+      requestState.run(state, () => tracked.captureException(error));
     };
 
     // Cause propagation (root-cause-graph.md §3): only to a caller that is itself traced.
@@ -266,8 +274,12 @@ export function createExpressIntegration(
         // A raw header array passed to writeHead can't be merged with setHeader; leave those be.
         if (status >= 500 && !res.headersSent && !args.some(Array.isArray)) {
           try {
-            runWithContext(context, () => reportUnreported5xx(status));
-            const fingerprint = state.firstError && client.fingerprintOf?.(state.firstError);
+            // The error captured so far, or else the one `finish` will record if nothing is. (If
+            // the handler captures its real error after responding, the header has already named
+            // the synthetic one, which is then never recorded; the caller's link to it is dropped
+            // as unknown. Capturing before responding gives the caller the real cause.)
+            const named = state.firstError ?? unreportedError(status);
+            const fingerprint = client.fingerprintOf?.(named);
             if (fingerprint && !res.hasHeader(HEADER_CAUSE))
               res.setHeader(HEADER_CAUSE, fingerprint);
           } catch {

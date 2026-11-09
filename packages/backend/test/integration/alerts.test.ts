@@ -16,7 +16,10 @@ const CRON = "alerts-test-cron-secret-0123";
 class FakeMailer implements Mailer {
   sent: { to: string[]; email: AlertEmail }[] = [];
   failWith: Error | undefined;
+  /** How long a send takes, to have something happen while one is in flight. */
+  delayMs = 0;
   async send(to: readonly string[], email: AlertEmail): Promise<void> {
+    if (this.delayMs > 0) await new Promise((r) => setTimeout(r, this.delayMs));
     if (this.failWith) throw this.failWith;
     this.sent.push({ to: [...to], email });
   }
@@ -70,6 +73,7 @@ beforeEach(() => {
   _resetOrgCacheForTests();
   mailer.sent = [];
   mailer.failWith = undefined;
+  mailer.delayMs = 0;
 });
 
 const admin = (method: "GET" | "POST" | "PUT", url: string, payload?: unknown) =>
@@ -472,6 +476,120 @@ describe("alert emails", () => {
     const [a, b] = await Promise.all([notifier.runForOrg(orgId), notifier.runForOrg(orgId)]);
     expect(a.emails + b.emails).toBe(1);
     expect(mailer.sent).toHaveLength(1);
+  });
+
+  it("an issue stored before this release does not alert as new in its other environments", async () => {
+    const { orgId, apiKey, db } = await newOrg();
+    await setAlerts(orgId, { enabled: true, recipients: ["dev@example.com"] });
+    // As an older backend left it: no environments, no place tracking, nothing pending.
+    const then = new Date(Date.now() - 86_400_000).toISOString();
+    await db()
+      .collection("issues")
+      .insertOne({
+        fingerprint: "fp-legacy",
+        count: 40,
+        userIdSet: [],
+        endpointCounts: {},
+        durationSamplesMs: [],
+        releases: [],
+        services: ["orders-api"],
+        firstSeen: then,
+        lastSeen: then,
+        exemplarRefs: [],
+        adjustedCount: 1,
+      });
+    await ingest(apiKey, { fp: "fp-legacy", environment: "production" });
+    await ingest(apiKey, { fp: "fp-legacy", environment: "staging" });
+    await waitForEmails(1, 400);
+    expect(mailer.sent).toHaveLength(0);
+    expect(await pending(db)).toEqual([]);
+  });
+
+  it("an issue alerted in production does not alert a production-only filter from staging", async () => {
+    const { orgId, apiKey, db } = await newOrg();
+    await setAlerts(orgId, {
+      enabled: true,
+      recipients: ["dev@example.com"],
+      environments: ["production"],
+    });
+    await ingest(apiKey, { fp: "fp-prod-first", environment: "production" });
+    await waitForEmails(1);
+    expect(mailer.sent).toHaveLength(1);
+
+    await ingest(apiKey, { fp: "fp-prod-first", environment: "staging" });
+    await waitForEmails(2, 400);
+    expect(mailer.sent).toHaveLength(1);
+    expect(await pending(db)).toEqual([]);
+  });
+
+  it("an issue created without example events does not alert again at its first environment", async () => {
+    const { orgId, apiKey } = await newOrg();
+    await setAlerts(orgId, { enabled: true, recipients: ["dev@example.com"] });
+    // Counts only, as for a suppressed fingerprint: no exemplar, so no environment.
+    const [fold] = items({ fp: "fp-counts-only" });
+    (fold!.payload as { exemplars: string[] }).exemplars = [];
+    const res = await app.inject({
+      method: "POST",
+      url: "/ingest",
+      headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/x-ndjson" },
+      payload: encodeEnvelope({
+        sentAt: new Date().toISOString(),
+        sdkVersion: "t",
+        items: [fold!],
+      }),
+    });
+    expect(res.statusCode).toBe(202);
+    await waitForEmails(1);
+    expect(mailer.sent).toHaveLength(1);
+
+    await ingest(apiKey, { fp: "fp-counts-only", environment: "production" });
+    await waitForEmails(2, 400);
+    expect(mailer.sent).toHaveLength(1);
+  });
+
+  it("the SDK's HandledHttpError is the same error across SDK versions, wherever its stack points", async () => {
+    const { orgId, apiKey } = await newOrg();
+    const type = "HandledHttpError:GET:/orders/:id";
+    await ingest(apiKey, {
+      fp: "fp-http-old",
+      type,
+      message: "HTTP 500: GET /orders/:id",
+      fn: "onFinish",
+    });
+    await setAlerts(orgId, { enabled: true, recipients: ["dev@example.com"] });
+    await ingest(apiKey, {
+      fp: "fp-http-new",
+      type,
+      message: "HTTP 502: GET /orders/:id",
+      fn: "respond",
+    });
+    await waitForEmails(1, 400);
+    expect(mailer.sent).toHaveLength(0);
+  });
+
+  it("an issue created while another run is sending still goes out, without waiting for a timer", async () => {
+    const { orgId, apiKey } = await newOrg();
+    await setAlerts(orgId, { enabled: true, recipients: ["dev@example.com"] });
+    mailer.delayMs = 300;
+    await ingest(apiKey, { fp: "fp-during-1" }); // its run holds the lease for the slow send
+    await pause(100);
+    await ingest(apiKey, { fp: "fp-during-2" }); // its run finds the lease held
+    await waitForEmails(2);
+    expect(mailer.sent).toHaveLength(2);
+    expect(mailer.sent[1]!.email.text).toContain("fp-during-2");
+  });
+
+  it("a mark set again while its email was being sent is not cleared with it", async () => {
+    const { orgId, apiKey, db } = await newOrg();
+    await setAlerts(orgId, { enabled: true, recipients: ["dev@example.com"] });
+    mailer.delayMs = 300;
+    await ingest(apiKey, { fp: "fp-moves", environment: "staging" });
+    await pause(100);
+    // It reaches production while the staging email is in flight.
+    await ingest(apiKey, { fp: "fp-moves", environment: "production" });
+    await waitForEmails(2);
+    expect(mailer.sent).toHaveLength(2);
+    expect(await pending(db)).toEqual([]);
   });
 
   it("records each issue's environments, from its example events", async () => {
