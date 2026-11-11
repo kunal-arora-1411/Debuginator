@@ -739,6 +739,7 @@ Why it's built this way — read before changing the core:
 - [`docs/architecture/root-cause-graph.md`](docs/architecture/root-cause-graph.md) — finding the
   root cause across services from folded data: the `X-BB-Cause` header and the issue graph.
 - [`bench/storm`](bench/storm) — the error-storm benchmark against OpenTelemetry: method,
-  fairness notes, and the latest results.
+  fairness notes, and the latest results. To run it and check its numbers on your own machine:
+  [`TESTING.md`](TESTING.md).
 - [`docs/api.md`](docs/api.md) · [`docs/schema.md`](docs/schema.md) — the Query API and the
   MongoDB schema.
