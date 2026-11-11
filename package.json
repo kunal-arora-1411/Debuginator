@@ -2,7 +2,7 @@
   "name": "bugbuster",
   "private": true,
   "version": "0.0.0",
-  "description": "Error-first observability platform — fingerprinting and folding happen client-side, in the SDK.",
+  "description": "Error-first observability platform \u2014 fingerprinting and folding happen client-side, in the SDK.",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -13,6 +13,7 @@
     "test:unit": "pnpm -r run test:unit",
     "test:integration": "pnpm -r run test:integration",
     "bench": "pnpm -r run bench",
+    "bench:storm": "pnpm --filter @bugbusterhq/bench-storm run storm --",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
