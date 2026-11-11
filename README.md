@@ -6,6 +6,23 @@ they ever touch the network. A 50,000-event error storm becomes a handful of agg
 plus a few full-fidelity exemplars, computed where the storm is happening, not after it's already
 cost you the bandwidth.
 
+**Measured** ([`bench/storm`](bench/storm), 50,000 identical errors at 10,000/s, median of 5 runs,
+same machine and collector for both):
+
+| | Sent | Sent, gzipped | Backend writes | App CPU added | Longest event-loop freeze |
+|---|---:|---:|---:|---:|---:|
+| OpenTelemetry (OTLP/protobuf, one span per failed request) | 38.1 MB | 2.4 MB | 50,000 | 1.3 s | 47 ms |
+| BugBuster, direct (buffer sized for the storm) | **4.9 KB** | **1.5 KB** | **6** | 1.9 s | 978 ms |
+| BugBuster, direct (default 8 MB buffer) | 4.9 KB | 1.6 KB | 6 | 0.8 s | 137 ms — but **45,888 of 50,000 dropped** (counted) |
+
+The claim holds where it is made: about **8,000× fewer bytes and writes**. What
+the benchmark also found, and what is not fixed yet: at its default buffer size the SDK drops
+most of a storm this fast (every drop is counted, but the issue's count is then too low); keeping
+everything costs more app CPU than OpenTelemetry; and folding a whole window at once freezes the
+event loop for up to a second. With 5,000 kinds of error in the storm, there is little to group
+and BugBuster sends about as much as OpenTelemetry does. All scenarios and columns:
+[`bench/storm/results.md`](bench/storm/results.md).
+
 BugBuster is **self-hosted**: you run the backend (a Node service plus MongoDB) yourself, and your
 applications report to it through the npm SDK.
 
@@ -721,5 +738,7 @@ Why it's built this way — read before changing the core:
 - [`docs/glossary.md`](docs/glossary.md) — plain-English definitions of every term used here.
 - [`docs/architecture/root-cause-graph.md`](docs/architecture/root-cause-graph.md) — finding the
   root cause across services from folded data: the `X-BB-Cause` header and the issue graph.
+- [`bench/storm`](bench/storm) — the error-storm benchmark against OpenTelemetry: method,
+  fairness notes, and the latest results.
 - [`docs/api.md`](docs/api.md) · [`docs/schema.md`](docs/schema.md) — the Query API and the
   MongoDB schema.

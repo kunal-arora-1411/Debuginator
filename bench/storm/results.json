@@ -1,0 +1,2285 @@
+{
+  "opts": {
+    "events": 50000,
+    "rate": 10000,
+    "runs": 5,
+    "scenarios": [
+      "storm",
+      "incident",
+      "cardinality"
+    ],
+    "sdks": [
+      "bugbuster",
+      "bugbuster-noloss",
+      "bugbuster-agent",
+      "otel",
+      "otel-noloss"
+    ],
+    "out": "/home/user/Debuginator/bench/storm/results.md"
+  },
+  "env": "Intel(R) Xeon(R) Processor @ 2.10GHz, 4 cores, 16 GB RAM · linux 6.18.44-fc-v378 · Node 22.23.4 · @bugbusterhq/sdk-node 0.3.0 · @opentelemetry/sdk-trace 3.1.1 + exporter-trace-otlp-proto 0.301.1",
+  "raw": {
+    "storm": {
+      "none": [
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 537.568,
+            "wallMs": 5001.114793,
+            "flushMs": 0.08450700000048528,
+            "eventLoopDelayP99Ms": 1.824767,
+            "eventLoopDelayMaxMs": 11.395071,
+            "peakRssMb": 56.11328125
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 526.325,
+            "wallMs": 5001.273141,
+            "flushMs": 0.15333000000009633,
+            "eventLoopDelayP99Ms": 1.700863,
+            "eventLoopDelayMaxMs": 3.731455,
+            "peakRssMb": 54.44140625
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 500.484,
+            "wallMs": 5000.681431,
+            "flushMs": 0.08087199999954464,
+            "eventLoopDelayP99Ms": 1.518591,
+            "eventLoopDelayMaxMs": 3.239935,
+            "peakRssMb": 55.97265625
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 522.833,
+            "wallMs": 5000.238216999999,
+            "flushMs": 0.07681899999988673,
+            "eventLoopDelayP99Ms": 1.695743,
+            "eventLoopDelayMaxMs": 4.218879,
+            "peakRssMb": 55.25
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 520.834,
+            "wallMs": 5000.933654,
+            "flushMs": 0.08432100000027276,
+            "eventLoopDelayP99Ms": 1.794047,
+            "eventLoopDelayMaxMs": 4.874239,
+            "peakRssMb": 55.33203125
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        }
+      ],
+      "bugbuster": [
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1398.708,
+            "wallMs": 5146.628187,
+            "flushMs": 19.279002999999648,
+            "eventLoopDelayP99Ms": 4.020223,
+            "eventLoopDelayMaxMs": 128.974847,
+            "peakRssMb": 89.46484375
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4990,
+            "rawBytes": 4990,
+            "gzipBytes": 1588,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4112,
+            "bugbusterDropped": 45888,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1322.765,
+            "wallMs": 5149.03964,
+            "flushMs": 13.001575999999659,
+            "eventLoopDelayP99Ms": 3.160063,
+            "eventLoopDelayMaxMs": 137.625599,
+            "peakRssMb": 88.89453125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4990,
+            "rawBytes": 4990,
+            "gzipBytes": 1589,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4111,
+            "bugbusterDropped": 45889,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1336.023,
+            "wallMs": 5148.243849,
+            "flushMs": 15.464415000000372,
+            "eventLoopDelayP99Ms": 3.106815,
+            "eventLoopDelayMaxMs": 134.086655,
+            "peakRssMb": 89.45703125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4990,
+            "rawBytes": 4990,
+            "gzipBytes": 1589,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4109,
+            "bugbusterDropped": 45891,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1324.926,
+            "wallMs": 5148.977671000001,
+            "flushMs": 14.229151999999885,
+            "eventLoopDelayP99Ms": 2.342911,
+            "eventLoopDelayMaxMs": 136.970239,
+            "peakRssMb": 89.6328125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4990,
+            "rawBytes": 4990,
+            "gzipBytes": 1581,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4117,
+            "bugbusterDropped": 45883,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1316.479,
+            "wallMs": 5154.371042000001,
+            "flushMs": 13.700701000000663,
+            "eventLoopDelayP99Ms": 2.449407,
+            "eventLoopDelayMaxMs": 142.213119,
+            "peakRssMb": 89.125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4990,
+            "rawBytes": 4990,
+            "gzipBytes": 1588,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4112,
+            "bugbusterDropped": 45888,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        }
+      ],
+      "bugbuster-noloss": [
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2416.326,
+            "wallMs": 6024.046321,
+            "flushMs": 20.44035299999996,
+            "eventLoopDelayP99Ms": 3.756031,
+            "eventLoopDelayMaxMs": 1005.060095,
+            "peakRssMb": 162.1484375
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4989,
+            "rawBytes": 4989,
+            "gzipBytes": 1591,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2389.978,
+            "wallMs": 5989.642519,
+            "flushMs": 14.279951999999867,
+            "eventLoopDelayP99Ms": 2.697215,
+            "eventLoopDelayMaxMs": 977.272831,
+            "peakRssMb": 162.3828125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4989,
+            "rawBytes": 4989,
+            "gzipBytes": 1584,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2386.334,
+            "wallMs": 6015.392272,
+            "flushMs": 13.675575999999637,
+            "eventLoopDelayP99Ms": 2.541567,
+            "eventLoopDelayMaxMs": 1004.535807,
+            "peakRssMb": 160.6328125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4989,
+            "rawBytes": 4989,
+            "gzipBytes": 1587,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2331.359,
+            "wallMs": 5957.742273,
+            "flushMs": 12.58035899999959,
+            "eventLoopDelayP99Ms": 2.578431,
+            "eventLoopDelayMaxMs": 946.339839,
+            "peakRssMb": 163.0625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4989,
+            "rawBytes": 4989,
+            "gzipBytes": 1586,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2429.854,
+            "wallMs": 5989.4243910000005,
+            "flushMs": 13.608868000000257,
+            "eventLoopDelayP99Ms": 3.186687,
+            "eventLoopDelayMaxMs": 977.797119,
+            "peakRssMb": 163.3203125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 4989,
+            "rawBytes": 4989,
+            "gzipBytes": 1591,
+            "folds": 2,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        }
+      ],
+      "bugbuster-agent": [
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1298.167,
+            "wallMs": 5120.1348100000005,
+            "flushMs": 3.8423460000003615,
+            "eventLoopDelayP99Ms": 2.934783,
+            "eventLoopDelayMaxMs": 118.030335,
+            "peakRssMb": 83.9140625
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 1000,
+            "rawBytes": 4577,
+            "gzipBytes": 992,
+            "folds": 1,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4114,
+            "bugbusterDropped": 45886,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1259.103,
+            "wallMs": 5116.520178,
+            "flushMs": 4.787336000000323,
+            "eventLoopDelayP99Ms": 2.836479,
+            "eventLoopDelayMaxMs": 112.721919,
+            "peakRssMb": 83.56640625
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 995,
+            "rawBytes": 4577,
+            "gzipBytes": 995,
+            "folds": 1,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4105,
+            "bugbusterDropped": 45895,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1316.402,
+            "wallMs": 5117.918735,
+            "flushMs": 3.8744110000006913,
+            "eventLoopDelayP99Ms": 2.928639,
+            "eventLoopDelayMaxMs": 115.605503,
+            "peakRssMb": 85.87890625
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 995,
+            "rawBytes": 4577,
+            "gzipBytes": 993,
+            "folds": 1,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4110,
+            "bugbusterDropped": 45890,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1313.624,
+            "wallMs": 5117.0506430000005,
+            "flushMs": 3.7296430000005785,
+            "eventLoopDelayP99Ms": 2.379775,
+            "eventLoopDelayMaxMs": 115.736575,
+            "peakRssMb": 84.48046875
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 995,
+            "rawBytes": 4577,
+            "gzipBytes": 992,
+            "folds": 1,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4118,
+            "bugbusterDropped": 45882,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1307.69,
+            "wallMs": 5118.078807,
+            "flushMs": 3.923855000000003,
+            "eventLoopDelayP99Ms": 3.395583,
+            "eventLoopDelayMaxMs": 114.491391,
+            "peakRssMb": 84.578125
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 992,
+            "rawBytes": 4577,
+            "gzipBytes": 991,
+            "folds": 1,
+            "exemplars": 4,
+            "exemplarsStored": 4,
+            "eventsAccounted": 4126,
+            "bugbusterDropped": 45874,
+            "fingerprints": 1,
+            "spans": 0
+          }
+        }
+      ],
+      "otel": [
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1857.707,
+            "wallMs": 5007.0592019999995,
+            "flushMs": 6.602716999999757,
+            "eventLoopDelayP99Ms": 8.265727,
+            "eventLoopDelayMaxMs": 48.005119,
+            "peakRssMb": 97.94140625,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2558316,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1841.574,
+            "wallMs": 5007.058198000001,
+            "flushMs": 6.072273000000678,
+            "eventLoopDelayP99Ms": 7.446527,
+            "eventLoopDelayMaxMs": 41.746431,
+            "peakRssMb": 97.6015625,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2559222,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1924.169,
+            "wallMs": 5006.997818,
+            "flushMs": 6.193871999999828,
+            "eventLoopDelayP99Ms": 8.568831,
+            "eventLoopDelayMaxMs": 45.383679,
+            "peakRssMb": 97.171875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2556533,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1843.358,
+            "wallMs": 5008.180297,
+            "flushMs": 7.62005500000032,
+            "eventLoopDelayP99Ms": 7.528447,
+            "eventLoopDelayMaxMs": 49.709055,
+            "peakRssMb": 97.13671875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2557131,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1852.581,
+            "wallMs": 5007.375061000001,
+            "flushMs": 7.096677000000454,
+            "eventLoopDelayP99Ms": 7.696383,
+            "eventLoopDelayMaxMs": 46.530559,
+            "peakRssMb": 100.06640625,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2559395,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        }
+      ],
+      "otel-noloss": [
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1858.337,
+            "wallMs": 5006.874735,
+            "flushMs": 6.39905699999963,
+            "eventLoopDelayP99Ms": 7.921663,
+            "eventLoopDelayMaxMs": 73.269247,
+            "peakRssMb": 99.8671875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2556927,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1873.042,
+            "wallMs": 5008.1213849999995,
+            "flushMs": 7.071544999999787,
+            "eventLoopDelayP99Ms": 8.261631,
+            "eventLoopDelayMaxMs": 51.871743,
+            "peakRssMb": 99.25,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2557085,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1871.162,
+            "wallMs": 5006.677229,
+            "flushMs": 6.1655940000000555,
+            "eventLoopDelayP99Ms": 7.774207,
+            "eventLoopDelayMaxMs": 41.877503,
+            "peakRssMb": 97.046875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2557396,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1830.001,
+            "wallMs": 5007.022454999999,
+            "flushMs": 6.590621999999712,
+            "eventLoopDelayP99Ms": 7.610367,
+            "eventLoopDelayMaxMs": 42.663935,
+            "peakRssMb": 98.62109375,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2557986,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1867.96,
+            "wallMs": 5007.616384999999,
+            "flushMs": 6.7737209999995684,
+            "eventLoopDelayP99Ms": 7.970815,
+            "eventLoopDelayMaxMs": 56.229887,
+            "peakRssMb": 97.671875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 39994404,
+            "rawBytes": 39994404,
+            "gzipBytes": 2557463,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        }
+      ]
+    },
+    "incident": {
+      "none": [
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 533.826,
+            "wallMs": 5001.247393,
+            "flushMs": 0.07991500000025553,
+            "eventLoopDelayP99Ms": 1.630207,
+            "eventLoopDelayMaxMs": 5.378047,
+            "peakRssMb": 55.609375
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 533.146,
+            "wallMs": 5000.206671,
+            "flushMs": 0.07647499999984575,
+            "eventLoopDelayP99Ms": 1.672191,
+            "eventLoopDelayMaxMs": 3.690495,
+            "peakRssMb": 55.3046875
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 499.464,
+            "wallMs": 5001.075605,
+            "flushMs": 0.07928100000026461,
+            "eventLoopDelayP99Ms": 1.534975,
+            "eventLoopDelayMaxMs": 3.309567,
+            "peakRssMb": 56.15234375
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 510.462,
+            "wallMs": 5001.017519,
+            "flushMs": 0.07540100000005623,
+            "eventLoopDelayP99Ms": 1.555455,
+            "eventLoopDelayMaxMs": 3.700735,
+            "peakRssMb": 55.4921875
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 519.969,
+            "wallMs": 5001.081115,
+            "flushMs": 0.2206900000001042,
+            "eventLoopDelayP99Ms": 1.531903,
+            "eventLoopDelayMaxMs": 5.754879,
+            "peakRssMb": 55.3671875
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        }
+      ],
+      "bugbuster": [
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1342.097,
+            "wallMs": 5129.439794999999,
+            "flushMs": 12.55447599999934,
+            "eventLoopDelayP99Ms": 2.553855,
+            "eventLoopDelayMaxMs": 118.358015,
+            "peakRssMb": 89.56640625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 32097,
+            "rawBytes": 32097,
+            "gzipBytes": 3960,
+            "folds": 14,
+            "exemplars": 28,
+            "exemplarsStored": 28,
+            "eventsAccounted": 4111,
+            "bugbusterDropped": 45889,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1315.817,
+            "wallMs": 5154.506445,
+            "flushMs": 14.526867999999922,
+            "eventLoopDelayP99Ms": 2.400255,
+            "eventLoopDelayMaxMs": 141.295615,
+            "peakRssMb": 89.30859375
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 32097,
+            "rawBytes": 32097,
+            "gzipBytes": 3967,
+            "folds": 14,
+            "exemplars": 28,
+            "exemplarsStored": 28,
+            "eventsAccounted": 4109,
+            "bugbusterDropped": 45891,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1314.488,
+            "wallMs": 5137.927928,
+            "flushMs": 13.296830000000227,
+            "eventLoopDelayP99Ms": 2.410495,
+            "eventLoopDelayMaxMs": 125.566975,
+            "peakRssMb": 90.0625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 31102,
+            "rawBytes": 31102,
+            "gzipBytes": 3885,
+            "folds": 14,
+            "exemplars": 27,
+            "exemplarsStored": 27,
+            "eventsAccounted": 4105,
+            "bugbusterDropped": 45895,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1366.384,
+            "wallMs": 5163.268335,
+            "flushMs": 13.030174999999872,
+            "eventLoopDelayP99Ms": 3.094527,
+            "eventLoopDelayMaxMs": 151.388159,
+            "peakRssMb": 89.734375
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 31102,
+            "rawBytes": 31102,
+            "gzipBytes": 3876,
+            "folds": 14,
+            "exemplars": 27,
+            "exemplarsStored": 27,
+            "eventsAccounted": 4107,
+            "bugbusterDropped": 45893,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1329.482,
+            "wallMs": 5130.749188,
+            "flushMs": 13.015639999999621,
+            "eventLoopDelayP99Ms": 2.918399,
+            "eventLoopDelayMaxMs": 118.095871,
+            "peakRssMb": 89.59765625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 27857,
+            "rawBytes": 27857,
+            "gzipBytes": 3594,
+            "folds": 13,
+            "exemplars": 24,
+            "exemplarsStored": 24,
+            "eventsAccounted": 4100,
+            "bugbusterDropped": 45900,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        }
+      ],
+      "bugbuster-noloss": [
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2455.52,
+            "wallMs": 6042.134409,
+            "flushMs": 13.003431000000091,
+            "eventLoopDelayP99Ms": 3.391487,
+            "eventLoopDelayMaxMs": 1029.701631,
+            "peakRssMb": 165.89453125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 29855,
+            "rawBytes": 29855,
+            "gzipBytes": 3787,
+            "folds": 13,
+            "exemplars": 26,
+            "exemplarsStored": 26,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2458.035,
+            "wallMs": 5967.868662,
+            "flushMs": 13.121062000000165,
+            "eventLoopDelayP99Ms": 3.393535,
+            "eventLoopDelayMaxMs": 955.777023,
+            "peakRssMb": 167.2734375
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 31110,
+            "rawBytes": 31110,
+            "gzipBytes": 3891,
+            "folds": 14,
+            "exemplars": 27,
+            "exemplarsStored": 27,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2371.482,
+            "wallMs": 5963.872853,
+            "flushMs": 12.930469999999332,
+            "eventLoopDelayP99Ms": 2.938879,
+            "eventLoopDelayMaxMs": 952.631295,
+            "peakRssMb": 165.94140625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 32105,
+            "rawBytes": 32105,
+            "gzipBytes": 3978,
+            "folds": 14,
+            "exemplars": 28,
+            "exemplarsStored": 28,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2443.154,
+            "wallMs": 6004.842799999999,
+            "flushMs": 13.247475999999551,
+            "eventLoopDelayP99Ms": 3.278847,
+            "eventLoopDelayMaxMs": 993.525759,
+            "peakRssMb": 165.67578125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 32105,
+            "rawBytes": 32105,
+            "gzipBytes": 3988,
+            "folds": 14,
+            "exemplars": 28,
+            "exemplarsStored": 28,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2475.556,
+            "wallMs": 6006.677286,
+            "flushMs": 12.826453000000583,
+            "eventLoopDelayP99Ms": 2.781183,
+            "eventLoopDelayMaxMs": 995.622911,
+            "peakRssMb": 165.7890625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 32105,
+            "rawBytes": 32105,
+            "gzipBytes": 3987,
+            "folds": 14,
+            "exemplars": 28,
+            "exemplarsStored": 28,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        }
+      ],
+      "bugbuster-agent": [
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1323.152,
+            "wallMs": 5119.14014,
+            "flushMs": 4.572036999999909,
+            "eventLoopDelayP99Ms": 2.766847,
+            "eventLoopDelayMaxMs": 116.064255,
+            "peakRssMb": 85.57421875
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 3075,
+            "rawBytes": 30908,
+            "gzipBytes": 3242,
+            "folds": 10,
+            "exemplars": 28,
+            "exemplarsStored": 28,
+            "eventsAccounted": 4110,
+            "bugbusterDropped": 45890,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1308.403,
+            "wallMs": 5106.695194,
+            "flushMs": 4.302107999999862,
+            "eventLoopDelayP99Ms": 2.981887,
+            "eventLoopDelayMaxMs": 103.677951,
+            "peakRssMb": 84.13671875
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 3088,
+            "rawBytes": 30908,
+            "gzipBytes": 3265,
+            "folds": 10,
+            "exemplars": 28,
+            "exemplarsStored": 28,
+            "eventsAccounted": 4110,
+            "bugbusterDropped": 45890,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1311.388,
+            "wallMs": 5105.102171,
+            "flushMs": 2.9106689999998707,
+            "eventLoopDelayP99Ms": 2.564095,
+            "eventLoopDelayMaxMs": 102.498303,
+            "peakRssMb": 84.3828125
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 2706,
+            "rawBytes": 25892,
+            "gzipBytes": 2844,
+            "folds": 10,
+            "exemplars": 23,
+            "exemplarsStored": 23,
+            "eventsAccounted": 4099,
+            "bugbusterDropped": 45901,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1274.566,
+            "wallMs": 5096.073018,
+            "flushMs": 2.1468210000002728,
+            "eventLoopDelayP99Ms": 2.254847,
+            "eventLoopDelayMaxMs": 94.699519,
+            "peakRssMb": 84.578125
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 2995,
+            "rawBytes": 29913,
+            "gzipBytes": 3156,
+            "folds": 10,
+            "exemplars": 27,
+            "exemplarsStored": 27,
+            "eventsAccounted": 4105,
+            "bugbusterDropped": 45895,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1314.507,
+            "wallMs": 5121.517157,
+            "flushMs": 6.496991999999409,
+            "eventLoopDelayP99Ms": 2.336767,
+            "eventLoopDelayMaxMs": 116.457471,
+            "peakRssMb": 84.17578125
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 3097,
+            "rawBytes": 30908,
+            "gzipBytes": 3252,
+            "folds": 10,
+            "exemplars": 28,
+            "exemplarsStored": 28,
+            "eventsAccounted": 4110,
+            "bugbusterDropped": 45890,
+            "fingerprints": 10,
+            "spans": 0
+          }
+        }
+      ],
+      "otel": [
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1902.21,
+            "wallMs": 5007.5017100000005,
+            "flushMs": 6.404474000000846,
+            "eventLoopDelayP99Ms": 8.261631,
+            "eventLoopDelayMaxMs": 43.220991,
+            "peakRssMb": 98.54296875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3051739,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1875.218,
+            "wallMs": 5008.100941000001,
+            "flushMs": 7.061388000000079,
+            "eventLoopDelayP99Ms": 7.819263,
+            "eventLoopDelayMaxMs": 40.173567,
+            "peakRssMb": 99.8203125,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3054148,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1844.132,
+            "wallMs": 5008.219814,
+            "flushMs": 7.1214469999995345,
+            "eventLoopDelayP99Ms": 7.729151,
+            "eventLoopDelayMaxMs": 41.943039,
+            "peakRssMb": 98.01171875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3052909,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1851.206,
+            "wallMs": 5010.333767,
+            "flushMs": 9.617018999999345,
+            "eventLoopDelayP99Ms": 7.569407,
+            "eventLoopDelayMaxMs": 42.500095,
+            "peakRssMb": 99.0546875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3053461,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1960.631,
+            "wallMs": 5006.864861,
+            "flushMs": 6.588471000000027,
+            "eventLoopDelayP99Ms": 8.343551,
+            "eventLoopDelayMaxMs": 40.009727,
+            "peakRssMb": 101.6796875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3049859,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        }
+      ],
+      "otel-noloss": [
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1920.646,
+            "wallMs": 5007.5776749999995,
+            "flushMs": 6.601891000000251,
+            "eventLoopDelayP99Ms": 8.081407,
+            "eventLoopDelayMaxMs": 46.104575,
+            "peakRssMb": 100.03125,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3051828,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1851.599,
+            "wallMs": 5006.999615000001,
+            "flushMs": 6.476789000000281,
+            "eventLoopDelayP99Ms": 7.610367,
+            "eventLoopDelayMaxMs": 42.926079,
+            "peakRssMb": 99.65625,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3052855,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1865.933,
+            "wallMs": 5016.827458,
+            "flushMs": 16.098312000000078,
+            "eventLoopDelayP99Ms": 7.757823,
+            "eventLoopDelayMaxMs": 46.792703,
+            "peakRssMb": 99.66015625,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3052119,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1856.142,
+            "wallMs": 5010.527316000001,
+            "flushMs": 6.970288000000437,
+            "eventLoopDelayP99Ms": 7.536639,
+            "eventLoopDelayMaxMs": 42.991615,
+            "peakRssMb": 98.25,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3054254,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1829.42,
+            "wallMs": 5009.077982,
+            "flushMs": 7.9228549999997995,
+            "eventLoopDelayP99Ms": 7.495679,
+            "eventLoopDelayMaxMs": 40.959999,
+            "peakRssMb": 99.48046875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38455901,
+            "rawBytes": 38455901,
+            "gzipBytes": 3053283,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        }
+      ]
+    },
+    "cardinality": {
+      "none": [
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 517.22,
+            "wallMs": 5000.818643,
+            "flushMs": 0.09446899999966263,
+            "eventLoopDelayP99Ms": 1.564671,
+            "eventLoopDelayMaxMs": 6.537215,
+            "peakRssMb": 55.81640625
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 525.24,
+            "wallMs": 5000.216020999999,
+            "flushMs": 0.07533599999987928,
+            "eventLoopDelayP99Ms": 1.645567,
+            "eventLoopDelayMaxMs": 3.717119,
+            "peakRssMb": 56.05859375
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 496.935,
+            "wallMs": 5000.985817,
+            "flushMs": 0.0809930000004897,
+            "eventLoopDelayP99Ms": 1.559551,
+            "eventLoopDelayMaxMs": 4.210687,
+            "peakRssMb": 56.4375
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 506.793,
+            "wallMs": 5000.352182,
+            "flushMs": 0.07909699999981967,
+            "eventLoopDelayP99Ms": 1.717247,
+            "eventLoopDelayMaxMs": 5.042175,
+            "peakRssMb": 55.0625
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "none",
+            "cpuMs": 501.02,
+            "wallMs": 5001.028093999999,
+            "flushMs": 0.07447299999967072,
+            "eventLoopDelayP99Ms": 1.628159,
+            "eventLoopDelayMaxMs": 4.612095,
+            "peakRssMb": 55.421875
+          },
+          "net": {
+            "requests": 0,
+            "wireBytes": 0,
+            "rawBytes": 0,
+            "gzipBytes": 0,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        }
+      ],
+      "bugbuster": [
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1471.074,
+            "wallMs": 5312.313569,
+            "flushMs": 310.2296180000003,
+            "eventLoopDelayP99Ms": 2.582527,
+            "eventLoopDelayMaxMs": 205.651967,
+            "peakRssMb": 132.6328125
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 5226355,
+            "rawBytes": 5226355,
+            "gzipBytes": 505474,
+            "folds": 4096,
+            "exemplars": 4096,
+            "exemplarsStored": 4096,
+            "eventsAccounted": 4096,
+            "bugbusterDropped": 45904,
+            "fingerprints": 4096,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1458.675,
+            "wallMs": 5306.634110999999,
+            "flushMs": 108.5509919999995,
+            "eventLoopDelayP99Ms": 3.035135,
+            "eventLoopDelayMaxMs": 199.360511,
+            "peakRssMb": 134.1015625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 5241832,
+            "rawBytes": 5241832,
+            "gzipBytes": 507069,
+            "folds": 4108,
+            "exemplars": 4108,
+            "exemplarsStored": 4108,
+            "eventsAccounted": 4108,
+            "bugbusterDropped": 45892,
+            "fingerprints": 4108,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1495.972,
+            "wallMs": 5351.498209,
+            "flushMs": 115.74897099999998,
+            "eventLoopDelayP99Ms": 2.990079,
+            "eventLoopDelayMaxMs": 238.026751,
+            "peakRssMb": 133.4140625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 5254602,
+            "rawBytes": 5254602,
+            "gzipBytes": 508156,
+            "folds": 4118,
+            "exemplars": 4118,
+            "exemplarsStored": 4118,
+            "eventsAccounted": 4118,
+            "bugbusterDropped": 45882,
+            "fingerprints": 4118,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1552.71,
+            "wallMs": 5357.170851,
+            "flushMs": 122.46487900000011,
+            "eventLoopDelayP99Ms": 3.110911,
+            "eventLoopDelayMaxMs": 235.667455,
+            "peakRssMb": 133.26171875
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 5239278,
+            "rawBytes": 5239278,
+            "gzipBytes": 506679,
+            "folds": 4106,
+            "exemplars": 4106,
+            "exemplarsStored": 4106,
+            "eventsAccounted": 4106,
+            "bugbusterDropped": 45894,
+            "fingerprints": 4106,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster",
+            "cpuMs": 1471.536,
+            "wallMs": 5329.410355,
+            "flushMs": 110.11746700000003,
+            "eventLoopDelayP99Ms": 3.121151,
+            "eventLoopDelayMaxMs": 220.594175,
+            "peakRssMb": 133.453125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 5243109,
+            "rawBytes": 5243109,
+            "gzipBytes": 507163,
+            "folds": 4109,
+            "exemplars": 4109,
+            "exemplarsStored": 4109,
+            "eventsAccounted": 4109,
+            "bugbusterDropped": 45891,
+            "fingerprints": 4109,
+            "spans": 0
+          }
+        }
+      ],
+      "bugbuster-noloss": [
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2781.788,
+            "wallMs": 6391.4221450000005,
+            "flushMs": 214.1602440000006,
+            "eventLoopDelayP99Ms": 3.457023,
+            "eventLoopDelayMaxMs": 1178.599423,
+            "peakRssMb": 277.9375
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 11429174,
+            "rawBytes": 11429174,
+            "gzipBytes": 1097486,
+            "folds": 5010,
+            "exemplars": 10010,
+            "exemplarsStored": 10010,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 5000,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2929.492,
+            "wallMs": 6385.267806,
+            "flushMs": 196.4822750000003,
+            "eventLoopDelayP99Ms": 2.254847,
+            "eventLoopDelayMaxMs": 1190.133759,
+            "peakRssMb": 244.3203125
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 11429174,
+            "rawBytes": 11429174,
+            "gzipBytes": 1097487,
+            "folds": 5010,
+            "exemplars": 10010,
+            "exemplarsStored": 10010,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 5000,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2810.089,
+            "wallMs": 6387.849759000001,
+            "flushMs": 214.91630900000018,
+            "eventLoopDelayP99Ms": 2.942975,
+            "eventLoopDelayMaxMs": 1174.405119,
+            "peakRssMb": 279.71484375
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 11426642,
+            "rawBytes": 11426642,
+            "gzipBytes": 1096837,
+            "folds": 5008,
+            "exemplars": 10008,
+            "exemplarsStored": 10008,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 5000,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2779.22,
+            "wallMs": 6298.429007,
+            "flushMs": 205.5315929999997,
+            "eventLoopDelayP99Ms": 2.353151,
+            "eventLoopDelayMaxMs": 1093.664767,
+            "peakRssMb": 277.50390625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 11430440,
+            "rawBytes": 11430440,
+            "gzipBytes": 1097227,
+            "folds": 5011,
+            "exemplars": 10011,
+            "exemplarsStored": 10011,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 5000,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-noloss",
+            "cpuMs": 2786.533,
+            "wallMs": 6427.753828999999,
+            "flushMs": 228.92486999999983,
+            "eventLoopDelayP99Ms": 3.291135,
+            "eventLoopDelayMaxMs": 1200.619519,
+            "peakRssMb": 277.72265625
+          },
+          "net": {
+            "requests": 2,
+            "wireBytes": 11431706,
+            "rawBytes": 11431706,
+            "gzipBytes": 1097903,
+            "folds": 5012,
+            "exemplars": 10012,
+            "exemplarsStored": 10012,
+            "eventsAccounted": 50000,
+            "bugbusterDropped": 0,
+            "fingerprints": 5000,
+            "spans": 0
+          }
+        }
+      ],
+      "bugbuster-agent": [
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1413.049,
+            "wallMs": 5226.506571999999,
+            "flushMs": 40.19480899999962,
+            "eventLoopDelayP99Ms": 2.177023,
+            "eventLoopDelayMaxMs": 188.088319,
+            "peakRssMb": 124.1484375
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 456413,
+            "rawBytes": 5246787,
+            "gzipBytes": 507350,
+            "folds": 4112,
+            "exemplars": 4112,
+            "exemplarsStored": 4112,
+            "eventsAccounted": 4112,
+            "bugbusterDropped": 45888,
+            "fingerprints": 4112,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1413.176,
+            "wallMs": 5235.8221300000005,
+            "flushMs": 34.75145100000009,
+            "eventLoopDelayP99Ms": 3.280895,
+            "eventLoopDelayMaxMs": 201.981951,
+            "peakRssMb": 125.65625
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 455019,
+            "rawBytes": 5237848,
+            "gzipBytes": 506488,
+            "folds": 4105,
+            "exemplars": 4105,
+            "exemplarsStored": 4105,
+            "eventsAccounted": 4105,
+            "bugbusterDropped": 45895,
+            "fingerprints": 4105,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1417.631,
+            "wallMs": 5208.943058000001,
+            "flushMs": 31.67443700000058,
+            "eventLoopDelayP99Ms": 2.523135,
+            "eventLoopDelayMaxMs": 178.126847,
+            "peakRssMb": 125.109375
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 456440,
+            "rawBytes": 5236571,
+            "gzipBytes": 506201,
+            "folds": 4104,
+            "exemplars": 4104,
+            "exemplarsStored": 4104,
+            "eventsAccounted": 4104,
+            "bugbusterDropped": 45896,
+            "fingerprints": 4104,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1364.801,
+            "wallMs": 5206.16918,
+            "flushMs": 30.012125000000196,
+            "eventLoopDelayP99Ms": 1.807359,
+            "eventLoopDelayMaxMs": 175.898623,
+            "peakRssMb": 125.1640625
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 455154,
+            "rawBytes": 5239125,
+            "gzipBytes": 506652,
+            "folds": 4106,
+            "exemplars": 4106,
+            "exemplarsStored": 4106,
+            "eventsAccounted": 4106,
+            "bugbusterDropped": 45894,
+            "fingerprints": 4106,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "bugbuster-agent",
+            "cpuMs": 1374.394,
+            "wallMs": 5206.067862,
+            "flushMs": 35.233970999999656,
+            "eventLoopDelayP99Ms": 2.701311,
+            "eventLoopDelayMaxMs": 171.966463,
+            "peakRssMb": 125.76953125
+          },
+          "net": {
+            "requests": 1,
+            "wireBytes": 455493,
+            "rawBytes": 5239125,
+            "gzipBytes": 506410,
+            "folds": 4106,
+            "exemplars": 4106,
+            "exemplarsStored": 4106,
+            "eventsAccounted": 4106,
+            "bugbusterDropped": 45894,
+            "fingerprints": 4106,
+            "spans": 0
+          }
+        }
+      ],
+      "otel": [
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1877.88,
+            "wallMs": 5010.033461999999,
+            "flushMs": 9.203214999999545,
+            "eventLoopDelayP99Ms": 7.700479,
+            "eventLoopDelayMaxMs": 40.697855,
+            "peakRssMb": 99.19921875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3440990,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1854.568,
+            "wallMs": 5009.395072,
+            "flushMs": 7.878952000000027,
+            "eventLoopDelayP99Ms": 7.634943,
+            "eventLoopDelayMaxMs": 42.893311,
+            "peakRssMb": 98.7890625,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3439365,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1870.459,
+            "wallMs": 5015.407858,
+            "flushMs": 15.133262000000286,
+            "eventLoopDelayP99Ms": 7.823359,
+            "eventLoopDelayMaxMs": 48.594943,
+            "peakRssMb": 99.08203125,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3442417,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1811.913,
+            "wallMs": 5008.627994,
+            "flushMs": 8.177929000000404,
+            "eventLoopDelayP99Ms": 7.503871,
+            "eventLoopDelayMaxMs": 49.414143,
+            "peakRssMb": 99.87109375,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3440423,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel",
+            "cpuMs": 1899.671,
+            "wallMs": 5006.782843999999,
+            "flushMs": 6.373145999999906,
+            "eventLoopDelayP99Ms": 7.942143,
+            "eventLoopDelayMaxMs": 44.826623,
+            "peakRssMb": 98.6015625,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3440363,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        }
+      ],
+      "otel-noloss": [
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1863.755,
+            "wallMs": 5008.062141,
+            "flushMs": 6.8173100000003615,
+            "eventLoopDelayP99Ms": 7.434239,
+            "eventLoopDelayMaxMs": 44.695551,
+            "peakRssMb": 98.546875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3440240,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1859.459,
+            "wallMs": 5009.36148,
+            "flushMs": 8.793542999999772,
+            "eventLoopDelayP99Ms": 7.798783,
+            "eventLoopDelayMaxMs": 45.219839,
+            "peakRssMb": 99.6171875,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3440027,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1832.551,
+            "wallMs": 5010.186506,
+            "flushMs": 9.422229000000698,
+            "eventLoopDelayP99Ms": 7.397375,
+            "eventLoopDelayMaxMs": 40.927231,
+            "peakRssMb": 100.5859375,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3442471,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1823.851,
+            "wallMs": 5006.911568,
+            "flushMs": 6.2570910000004005,
+            "eventLoopDelayP99Ms": 7.335935,
+            "eventLoopDelayMaxMs": 44.793855,
+            "peakRssMb": 99.2109375,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3440665,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        },
+        {
+          "app": {
+            "sdk": "otel-noloss",
+            "cpuMs": 1872.339,
+            "wallMs": 5007.0522120000005,
+            "flushMs": 6.695457000000715,
+            "eventLoopDelayP99Ms": 7.659519,
+            "eventLoopDelayMaxMs": 45.481983,
+            "peakRssMb": 102.64453125,
+            "otelExported": 50000,
+            "otelDropped": 0
+          },
+          "net": {
+            "requests": 98,
+            "wireBytes": 38439394,
+            "rawBytes": 38439394,
+            "gzipBytes": 3443259,
+            "folds": 0,
+            "exemplars": 0,
+            "exemplarsStored": 0,
+            "eventsAccounted": 0,
+            "bugbusterDropped": 0,
+            "fingerprints": 0,
+            "spans": 0
+          }
+        }
+      ]
+    }
+  }
+}

@@ -19,6 +19,26 @@ Options: `--events 50000`, `--rate 10000` (errors per second), `--runs 5`,
 `--sdks bugbuster,bugbuster-noloss,bugbuster-agent,otel,otel-noloss` (also `otel-json`),
 `--out results.md` (a `.json` with every run's raw numbers is written next to it).
 
+## What it found (latest run)
+
+- **The core claim holds.** For a storm of one or a few kinds of error, BugBuster sends kilobytes
+  where OpenTelemetry sends tens of megabytes (about 8,000× less for one repeated error), and a
+  backend writes a few dozen records instead of 50,000.
+- **At default settings, BugBuster drops most of a fast storm.** The error buffer (8 MB, budgeted
+  at about 2 KB per held error) holds ~4,100 errors per 5-second flush window; past that, errors
+  are dropped before they are folded. Every drop is counted in the SDK's drop counters, but the
+  issue's count comes out too low. OpenTelemetry's defaults lost nothing at this rate.
+- **Keeping everything costs more app CPU than OpenTelemetry** (about 1.9 s vs 1.3 s added for
+  50,000 errors): each error is stack-parsed, redacted and hashed, even though only a handful
+  become example events.
+- **The fold freezes the event loop.** The flush folds the whole window at once on the main
+  thread: up to about 1 second for 50,000 held errors.
+- **With thousands of kinds, there is little to group.** In the `cardinality` scenario BugBuster
+  sends about as much as OpenTelemetry (gzipped), and writes 15,000 records.
+- **Fixed along the way:** `shutdown()` did not wait for a periodic flush still sending, so a
+  large batch in flight at exit was lost and never counted (49,987 of 50,000 errors in the first
+  run of the `cardinality` scenario). Flushes now run one at a time.
+
 ## How it works
 
 ```text
