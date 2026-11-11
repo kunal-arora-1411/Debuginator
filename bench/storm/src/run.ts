@@ -49,9 +49,9 @@ function parseArgs(argv: string[]): Options {
     rate: Number(get("rate") ?? 10_000),
     runs: Number(get("runs") ?? 5),
     scenarios: (get("scenarios") ?? "storm,incident,cardinality").split(","),
-    sdks: (
-      get("sdks") ?? "bugbuster,bugbuster-noloss,bugbuster-agent,otel,otel-noloss"
-    ).split(",") as SdkName[],
+    sdks: (get("sdks") ?? "bugbuster,bugbuster-noloss,bugbuster-agent,otel,otel-noloss").split(
+      ",",
+    ) as SdkName[],
     out: get("out") ?? join(HERE, "..", "results.md"),
   };
   for (const s of opts.scenarios) if (!SCENARIOS[s]) throw new Error(`unknown scenario: ${s}`);
@@ -90,7 +90,13 @@ async function runOnce(
 ): Promise<RunMeasure> {
   collector.take(); // start clean
   if (sdk !== "bugbuster-agent") {
-    const app = await runApp([sdk, scenario, String(opts.events), String(opts.rate), collector.url]);
+    const app = await runApp([
+      sdk,
+      scenario,
+      String(opts.events),
+      String(opts.rate),
+      collector.url,
+    ]);
     return { app, net: collector.take() };
   }
 
@@ -226,7 +232,9 @@ function table(rows: Row[], baseline: Row, events: number): string {
 
 function packageVersion(name: string): string {
   try {
-    const pkgPath = fileURLToPath(import.meta.resolve(`${name}/package.json`));
+    // Read from this package's own node_modules: `pkg/package.json` is often not in a
+    // package's "exports", so it can't be resolved by name.
+    const pkgPath = join(HERE, "..", "node_modules", name, "package.json");
     return (JSON.parse(readFileSync(pkgPath, "utf8")) as { version: string }).version;
   } catch {
     return "?";
@@ -295,7 +303,10 @@ async function main(): Promise<void> {
     "",
   ].join("\n");
   writeFileSync(opts.out, md);
-  writeFileSync(opts.out.replace(/\.md$/, ".json"), JSON.stringify({ opts, env, raw }, setReplacer, 2));
+  writeFileSync(
+    opts.out.replace(/\.md$/, ".json"),
+    JSON.stringify({ opts, env, raw }, setReplacer, 2),
+  );
   console.log(md);
 }
 

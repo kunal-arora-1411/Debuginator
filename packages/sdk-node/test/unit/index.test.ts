@@ -75,4 +75,30 @@ describe("init() end-to-end", () => {
 
     expect(requestCount).toBe(1); // second flush was withheld by Retry-After, never reached the server
   });
+
+  it("shutdown() waits for a periodic flush that is still sending, so its batch is not lost", async () => {
+    // The backend takes 300 ms to answer: long enough that shutdown() is called mid-send.
+    let answered = 0;
+    respondWith = (res) =>
+      void setTimeout(() => {
+        answered++;
+        res.writeHead(202).end();
+      }, 300);
+
+    const client = init({
+      project: "test-app",
+      apiKey: "sk_test",
+      backendUrl: `http://127.0.0.1:${port}/ingest`,
+      agentSocketPath: "/nonexistent/bugbuster.sock",
+      flushMaxDelayMs: 50,
+      shutdownFlushTimeoutMs: 5_000,
+    });
+    client.captureException(new Error("in flight at shutdown"));
+    await new Promise((resolve) => setTimeout(resolve, 120)); // the periodic flush is now sending
+    expect(requestCount).toBe(1);
+    expect(answered).toBe(0);
+
+    await client.shutdown();
+    expect(answered).toBe(1); // before the fix, shutdown() returned here with the send unfinished
+  });
 });

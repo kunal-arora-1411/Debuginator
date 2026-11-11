@@ -124,7 +124,25 @@ export function init(rawConfig: unknown): BugBusterClient {
     }
   }
 
-  async function flush(): Promise<void> {
+  // One flush at a time. Without this, shutdown()'s flush could find the buffers already drained
+  // by a periodic flush that was still sending, finish at once, and let the process exit with
+  // that batch in flight — lost, and not counted anywhere.
+  let flushing: Promise<void> = Promise.resolve();
+  let flushBusy = false;
+  function flush(): Promise<void> {
+    const run = async () => {
+      flushBusy = true;
+      try {
+        await flushOnce();
+      } finally {
+        flushBusy = false;
+      }
+    };
+    flushing = flushing.then(run, run);
+    return flushing;
+  }
+
+  async function flushOnce(): Promise<void> {
     // X-BB-Retry-After (§7.1): honor a server-requested pause before attempting to send again.
     // Capture/fold keep running underneath — only the network send is withheld, and the ring's
     // own byte cap is what protects memory if the pause outlasts the buffer.
@@ -211,7 +229,10 @@ export function init(rawConfig: unknown): BugBusterClient {
 
   // Unref'd: this timer must never be the reason the host process fails to exit
   // (ingest-pipeline.md §3.1 rule 6).
-  const timer = setInterval(() => void flush(), config.flushMaxDelayMs);
+  // A tick that finds a flush still running skips: the next one picks up whatever arrived.
+  const timer = setInterval(() => {
+    if (!flushBusy) void flush();
+  }, config.flushMaxDelayMs);
   timer.unref();
 
   return {
@@ -226,6 +247,7 @@ export function init(rawConfig: unknown): BugBusterClient {
     },
     async shutdown() {
       clearInterval(timer);
+      // flush() queues behind a flush already in progress, so this waits for that one's send too.
       await Promise.race([
         flush(),
         new Promise<void>((resolve) => setTimeout(resolve, config.shutdownFlushTimeoutMs)),

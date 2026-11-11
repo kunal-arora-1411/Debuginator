@@ -130,10 +130,12 @@ async function makeSdk(
 }
 
 async function main(): Promise<void> {
-  const [sdkArg, scenarioArg, eventsArg, rateArg, collectorUrl, agentSocket] = process.argv.slice(2);
+  const [sdkArg, scenarioArg, eventsArg, rateArg, collectorUrl, agentSocket] =
+    process.argv.slice(2);
   const sdk = sdkArg as SdkName;
   const scenario = SCENARIOS[scenarioArg ?? ""];
-  if (!scenario || !collectorUrl) throw new Error("usage: app.js <sdk> <scenario> <events> <rate> <collectorUrl>");
+  if (!scenario || !collectorUrl)
+    throw new Error("usage: app.js <sdk> <scenario> <events> <rate> <collectorUrl>");
   const events = Number(eventsArg);
   const rate = Number(rateArg);
 
