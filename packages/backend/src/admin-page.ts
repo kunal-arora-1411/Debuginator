@@ -9,8 +9,23 @@
  *
  * Kept as a TypeScript string so it ships inside the compiled backend everywhere (Vercel included)
  * without bundler configuration for a separate file. The script inside deliberately uses no
- * template literals, so this outer one needs no escaping.
+ * template literals, so this outer one needs no escaping. Its one substitution is the spike rule,
+ * taken from alerts/spike.ts so the page always states the thresholds the backend applies.
  */
+import {
+  HOUR_MS,
+  SPIKE_BASELINE_HOURS,
+  SPIKE_COOLDOWN_MS,
+  SPIKE_FACTOR,
+  SPIKE_MIN_EVENTS,
+} from "./alerts/spike.js";
+
+const SPIKE_RULE =
+  `A spike is at least ${SPIKE_MIN_EVENTS} events in one hour and at least ${SPIKE_FACTOR} times ` +
+  `the error’s usual hourly rate over the ${SPIKE_BASELINE_HOURS} hours before. An error needs ` +
+  `that much history first, and alerts for a spike at most once every ` +
+  `${SPIKE_COOLDOWN_MS / HOUR_MS} hours.`;
+
 export const ADMIN_PAGE_HTML = String.raw`<!doctype html>
 <html lang="en">
 <head>
@@ -791,6 +806,10 @@ export const ADMIN_PAGE_HTML = String.raw`<!doctype html>
     env.value = a.environments.join(", ");
     var stack = checkbox("alertsStack", "Include the top of the stack trace", a.includeStack !== false);
     var spikes = checkbox("alertsSpikes", "Also alert when a known error spikes (far more often than usual)", a.spikes !== false);
+    var spikesField = el("div", "field");
+    var spikesHint = el("span", "hint", ${JSON.stringify(SPIKE_RULE)}); spikesHint.id = "alertsSpikesHint";
+    spikes.input.setAttribute("aria-describedby", spikesHint.id);
+    spikesField.append(spikes.label, spikesHint);
 
     var actions = el("div", "inline");
     var save = el("button", null, "Save alerts"); save.type = "submit";
@@ -806,7 +825,7 @@ export const ADMIN_PAGE_HTML = String.raw`<!doctype html>
       field("Only these services", svc, "Comma-separated. Leave empty for every service."),
       field("Only these environments", env, "Comma-separated. Leave empty for every environment; most teams use production."),
       stack.label,
-      spikes.label,
+      spikesField,
       actions
     );
     b.appendChild(f);
