@@ -718,6 +718,11 @@ is the automated version of the walkthrough above; the step-by-step version is i
 | [`packages/dashboard`](packages/dashboard) | Read-only viewer for issues and logs — one HTML file, no build step. |
 | [`examples/demo-app`](examples/demo-app) | An instrumented Express app plus the real end-to-end test. |
 
+The whole system in one file — every stage, wire field, endpoint, env var, collection, index and
+limit, plus what is deliberately missing:
+
+- [`DEBUGINATOR.md`](DEBUGINATOR.md) — the complete technical reference.
+
 Why it's built this way — read before changing the core:
 
 - [`docs/architecture/ingest-pipeline.md`](docs/architecture/ingest-pipeline.md) — the full
