@@ -41,6 +41,18 @@ cd packages/backend
 BUGBUSTER_CONTROL_DB_URI=mongodb://localhost:27017 PORT=8080 pnpm start
 ```
 
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+cd packages/backend
+$env:BUGBUSTER_CONTROL_DB_URI = 'mongodb://localhost:27017'
+$env:PORT = '8080'
+pnpm start
+```
+
+</details>
+
 ## 5. Start the Agent
 
 ```bash
@@ -50,6 +62,19 @@ BUGBUSTER_BACKEND_URL=http://localhost:8080/ingest \
 BUGBUSTER_API_KEY=demo-api-key \
 pnpm start
 ```
+
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+cd packages/agent
+$env:BUGBUSTER_AGENT_SOCKET = '\\.\pipe\bugbuster-agent'
+$env:BUGBUSTER_BACKEND_URL = 'http://localhost:8080/ingest'
+$env:BUGBUSTER_API_KEY = 'demo-api-key'
+node dist/index.js
+```
+
+</details>
 
 (On Windows, use a named pipe path instead, e.g. `\\.\pipe\bugbuster-agent`.)
 
@@ -61,6 +86,18 @@ BUGBUSTER_API_KEY=demo-api-key \
 BUGBUSTER_AGENT_SOCKET=/tmp/bugbuster-agent.sock \
 pnpm dev
 ```
+
+<details>
+<summary>Windows PowerShell</summary>
+
+```powershell
+cd examples/demo-app
+$env:BUGBUSTER_API_KEY = 'demo-api-key'
+$env:BUGBUSTER_AGENT_SOCKET = '\\.\pipe\bugbuster-agent'
+pnpm dev
+```
+
+</details>
 
 ## 7. Trigger an error and query it back
 
